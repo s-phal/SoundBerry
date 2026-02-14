@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="SoundBerry.CLI/SoundBerry.CLI.csproj" Id="a5759b2f-239b-4487-8a96-5f9c1a1cca6d" />
   <Project Path="SoundBerry.DataAccess/SoundBerry.DataAccess.csproj" Id="54d9a03a-0016-427e-9942-1a4ba8d2ff62" />
-  <Project Path="SoundBerry.UI/SoundBerry.UI.csproj" />
+  <Project Path="SoundBerry.Playback/SoundBerry.Playback.csproj" Id="7afda7ef-477a-4064-9147-f40240f6dc7a" />
 </Solution>

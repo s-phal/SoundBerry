@@ -5,4 +5,5 @@
 **/*__virtual.html
 **/*.sln
 /*.db
-**/.idea/
+**/SoundBerry.UI/*.mp3
+**/SoundBerry.UI/*.db

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
+using SoundBerry.DataAccess.TypeHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +10,6 @@ namespace SoundBerry.DataAccess
     public class DbConfig
     {
         private static readonly string _connectionString = "Data Source= C:\\Users\\sam\\source\\repos\\s-phal\\SoundBerry\\SoundBerry.UI\\SoundBerry.db";
-
-
         public static SqliteConnection OpenConnection()
         {
             var connection = new SqliteConnection(_connectionString);
@@ -20,8 +19,15 @@ namespace SoundBerry.DataAccess
         }
 
 
+        public static void Initialize()
+        {
+            SqlMapper.AddTypeHandler(new TimeSpanHandler());
 
-        public static void CreateTableIfNotExists()
+            CreateTableIfNotExists();
+        }
+
+
+        private static void CreateTableIfNotExists()
         {
             using var connection = OpenConnection();
 
