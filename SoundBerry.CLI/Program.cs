@@ -10,7 +10,7 @@ namespace SoundBerry.CLI
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             DbConfig.Initialize();
@@ -20,6 +20,13 @@ namespace SoundBerry.CLI
 
             var selectedIndex = 0;
             var trackList = Track.GetAll();
+
+            if (trackList.Count == 0)
+            {
+                PlaybackScreen.Run();
+                return;
+            }
+
             var playerController = new PlayerController(audioPlayer, trackList);
 
            
@@ -56,14 +63,12 @@ namespace SoundBerry.CLI
                     Environment.Exit(0);
                 }
 
+                await audioPlayer.Play(null);
 
-                playerController.HandleKeyInput(key);
-
-   
-
-
+                //playerController.HandleKeyInput(key);
 
             }
+
 
         }
     }
