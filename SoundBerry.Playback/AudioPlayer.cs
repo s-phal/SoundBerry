@@ -3,6 +3,8 @@ using SoundBerry.DataAccess.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace SoundBerry.Playback
 {
@@ -18,21 +20,52 @@ namespace SoundBerry.Playback
         }
 
 
-        public void Play(Track track)
+        public async Task Play(Track track)
         {
-            if (IsValid(track) == false)
-            {
-                return;
-            }
-
-
             this.Stop();
 
-            _audioFile = new AudioFileReader($"C:\\Users\\sam\\source\\repos\\s-phal\\SoundBerry\\SoundBerry.UI\\{track.FilePath}");
-            _outputDevice = new WaveOutEvent();
+            using var youtube = new YoutubeClient();
 
-            _outputDevice.Init(_audioFile);
-            _outputDevice.Play();
+            var videoUrl = track.Url;
+
+            var video = await youtube.Videos.GetAsync(videoUrl);
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("    Fetching stream...");
+            var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoUrl);
+
+            var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+
+            if (video != null)
+            {
+                var title = video.Title;
+                var author = video.Author.ChannelTitle;
+                var duration = video.Duration;
+            }
+
+            if (track.IsDownloaded == false)
+            {
+                var url = streamInfo.Url;
+                using (var mf = new MediaFoundationReader(url))
+
+                _outputDevice.Init(mf);
+                _outputDevice.Play();
+
+            }
+            else if (track.IsDownloaded && !string.IsNullOrWhiteSpace(track.FilePath))
+            {
+                _audioFile = new AudioFileReader($"C:\\Users\\sam\\source\\repos\\s-phal\\SoundBerry\\SoundBerry.UI\\{track.FilePath}");
+                _outputDevice = new WaveOutEvent();
+
+                _outputDevice.Init(_audioFile);
+                _outputDevice.Play();
+
+            }
+
+            Console.WriteLine("Playing");
+
+            Console.ResetColor();
+
         }
 
         public void Stop()
@@ -40,9 +73,6 @@ namespace SoundBerry.Playback
             _outputDevice?.Stop();
             _outputDevice?.Dispose();
             _audioFile?.Dispose();
-
-            _audioFile = null;
-            _outputDevice = null;
         }
 
         public void Pause()

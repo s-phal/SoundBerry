@@ -4,8 +4,11 @@
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Author { get; set; } = string.Empty;
+        public string Artist { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
         public string FilePath { get; set; } = string.Empty;
-        public TimeSpan Duration { get; set; } = new TimeSpan(0, 0, 0);
+        public int DurationSeconds { get; set; } = 0;
+        public TimeSpan Duration => TimeSpan.FromSeconds(DurationSeconds);
+        public bool IsDownloaded { get; set; } = false;
     }
 }

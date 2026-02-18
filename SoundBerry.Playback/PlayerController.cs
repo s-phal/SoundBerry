@@ -11,10 +11,12 @@ namespace SoundBerry.Playback
     {
         private readonly AudioPlayer? _audioPlayer;
         private readonly List<Track>? _trackList;
-        private static int _selectedIndex = 0;
+        private int _selectedIndex = 0;
+        private ConsoleKey _selectedConsoleKey = ConsoleKey.None;
 
         public int SelectedIndex => _selectedIndex;
         public Track CurrentTrack => _trackList[_selectedIndex];
+        public ConsoleKey SelectedConsoleKey => _selectedConsoleKey;
 
 
         public PlayerController(AudioPlayer audioPlayer, List<Track> trackList)
@@ -23,16 +25,22 @@ namespace SoundBerry.Playback
             _trackList = trackList;
         }
 
-        public void HandleKeyInput(ConsoleKey key)
+        public void HandleKeyInput()
         {
-            if (IsControllerStateValid() == false)
-            {
-                return;
-            }
+            var key = Console.ReadKey(true).Key;
 
             switch (key)
             {
+                case ConsoleKey.Q:
+                    Environment.Exit(0);
+                    break;
+
+                case ConsoleKey.A:
+                    _selectedConsoleKey = ConsoleKey.A;
+                    return;
+
                 case ConsoleKey.Escape:
+                    _selectedConsoleKey = ConsoleKey.Escape;
                     return;
 
                 case ConsoleKey.UpArrow:
@@ -50,6 +58,10 @@ namespace SoundBerry.Playback
                     break;
 
                 case ConsoleKey.Enter:
+                    if (_trackList == null || _trackList.Count == 0)
+                    {
+                        return;
+                    }
                     _audioPlayer.Play(CurrentTrack);
                     break;
 
@@ -65,6 +77,11 @@ namespace SoundBerry.Playback
 
                     break;
             }
+        }
+
+        private void RunAddTrackPrompt()
+        {
+            Console.WriteLine("Enter YouTube URL:");
         }
 
         private bool IsControllerStateValid()

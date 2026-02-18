@@ -2,9 +2,9 @@
 using NAudio.Wave;
 using SoundBerry.DataAccess;
 using SoundBerry.DataAccess.Models;
-using SoundBerry.DataAccess.TypeHandlers;
 using SoundBerry.Playback;
 using System.Numerics;
+using System.Text;
 
 namespace SoundBerry.CLI
 {
@@ -12,63 +12,12 @@ namespace SoundBerry.CLI
     {
         static async Task Main(string[] args)
         {
+            Console.InputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
 
             DbConfig.Initialize();
 
-            var audioPlayer = new AudioPlayer();
-
-
-            var selectedIndex = 0;
-            var trackList = Track.GetAll();
-
-            if (trackList.Count == 0)
-            {
-                PlaybackScreen.Run();
-                return;
-            }
-
-            var playerController = new PlayerController(audioPlayer, trackList);
-
-           
-
-
-            while (true)
-            {
-                Console.Clear();
-
-                Console.BackgroundColor = ConsoleColor.Gray;
-                Console.ForegroundColor = ConsoleColor.Black;
-
-                for (int i = 0; i < trackList.Count; i++)
-                {
-                    if (i == playerController.SelectedIndex)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                    }
-                    else
-                    {
-                        Console.ResetColor();
-                    }
-
-                    Console.WriteLine(trackList[i].Title);
-                }
-
-                Console.ResetColor();
-
-                var key = Console.ReadKey(true).Key;
-
-                if (key == ConsoleKey.Escape)
-                {
-                    Environment.Exit(0);
-                }
-
-                await audioPlayer.Play(null);
-
-                //playerController.HandleKeyInput(key);
-
-            }
-
+            await PlaybackScreen.Run();
 
         }
     }
